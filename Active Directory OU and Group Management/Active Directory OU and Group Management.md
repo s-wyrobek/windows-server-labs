@@ -28,13 +28,22 @@
 
 **Parent OU uzytkownicy_wyrobek created in the contoso.com domain root, with sprzedaz_wyrobek and marketing_wyrobek created inside it.**
 
+`Right-click contoso.com -> New -> Organizational Unit -> name: uzytkownicy_wyrobek -> OK; then right-click uzytkownicy_wyrobek -> New -> Organizational Unit -> name: sprzedaz_wyrobek (repeat for marketing_wyrobek) -> OK`
+
 ![OU structure created](images/Pasted%20image%2020260614180055.png)
 
 **ksiegowosc_wyrobek and dzial_it_wyrobek OUs created via the dsadd command on the London server.**
 
+```
+dsadd ou "ou=ksiegowosc_wyrobek,ou=uzytkownicy_wyrobek,dc=contoso,dc=com"
+dsadd ou "ou=dzial_it_wyrobek,ou=uzytkownicy_wyrobek,dc=contoso,dc=com"
+```
+
 ![OUs created via dsadd](images/Pasted%20image%2020260614180246.png)
 
 **Kadry and Kierownicy OUs moved from the domain root into uzytkownicy_wyrobek.**
+
+`Select Kadry and Kierownicy (Ctrl+click) -> right-click -> Move -> select uzytkownicy_wyrobek -> OK`
 
 ![OUs moved into uzytkownicy_wyrobek](images/Pasted%20image%2020260614181556.png)
 
@@ -44,17 +53,27 @@
 
 **User accounts tlem, tsmyk, and aradecki created in the sprzedaz_wyrobek OU.**
 
+`Right-click sprzedaz_wyrobek -> New -> User -> enter First name / Last name / User logon name -> Next -> set password Testowy123, check "User must change password at next logon" -> Next -> Finish (repeat for each user)`
+
 ![User accounts created](images/Pasted%20image%2020260614182039.png)
 
 **User account jkot created via the dsadd command in the sprzedaz_wyrobek OU.**
+
+```
+dsadd user "cn=Jan Kot,ou=sprzedaz_wyrobek,ou=uzytkownicy_wyrobek,dc=contoso,dc=com" -samid jkot -pwd Testowy123 -mustchpwd yes
+```
 
 ![jkot created via dsadd](images/Pasted%20image%2020260614182242.png)
 
 **Successful domain user login on the Nowak client machine.**
 
+`Sign out -> Other user -> CONTOSO\<username> + password -> set new password when prompted`
+
 ![Domain login on Nowak](images/Pasted%20image%2020260614182612.png)
 
 **Successful domain user login on the Glasgow server.**
+
+`Sign out -> Other user -> CONTOSO\<username> + password`
 
 ![Domain login on Glasgow](images/Pasted%20image%2020260614183036.png)
 
@@ -74,17 +93,25 @@
 
 **Global security group Sprzedaz created in the sprzedaz_wyrobek OU.**
 
+`Right-click sprzedaz_wyrobek -> New -> Group -> name: Sprzedaz -> Group scope: Global -> Group type: Security -> OK`
+
 ![Global group Sprzedaz created](images/Pasted%20image%2020260614185154.png)
 
 **All sales department users added as members of the Sprzedaz global group.**
+
+`Right-click Sprzedaz -> Properties -> Members tab -> Add -> select the sales department users -> OK -> OK`
 
 ![Members added to Sprzedaz](images/Pasted%20image%2020260614185231.png)
 
 **Domain local security group Drukarka_HP_Laserjet4000_1pietro created in the sprzedaz_wyrobek OU.**
 
+`Right-click sprzedaz_wyrobek -> New -> Group -> name: Drukarka_HP_Laserjet4000_1pietro -> Group scope: Domain local -> Group type: Security -> OK`
+
 ![Domain local group created](images/Pasted%20image%2020260614185341.png)
 
 **Groups Sprzedaz and Kadry added as members of the Drukarka_HP_Laserjet4000_1pietro domain local group.**
+
+`Right-click Drukarka_HP_Laserjet4000_1pietro -> Properties -> Members tab -> Add -> type Sprzedaz; Kadry -> Check Names -> OK -> OK`
 
 ![Groups nested in domain local group](images/Pasted%20image%2020260614185627.png)
 
@@ -113,21 +140,31 @@
 
 **User tlem moved from sprzedaz_wyrobek to the Kadry OU.**
 
+`Right-click tlem -> Move -> select Kadry -> OK`
+
 ![tlem moved to Kadry OU](images/Pasted%20image%2020260614191154.png)
 
 **User tlem added to the Kadry group to inherit resource permissions.**
+
+`Right-click tlem -> Add to a group -> type Kadry -> Check Names -> OK -> OK`
 
 ![tlem added to Kadry group](images/Pasted%20image%2020260614191228.png)
 
 **Delegation of group management permissions granted to tlem in the Kadry OU.**
 
+`Right-click Kadry OU -> Delegate Control -> Next -> Add: tlem -> Next -> select "Create, delete, and manage groups" -> Next -> Finish`
+
 ![Delegation of control wizard](images/Pasted%20image%2020260614191323.png)
 
 **Custom MMC console saved as zarzadzanie_domena_wyrobek.local on tlem's desktop on Nowak.**
 
+`Win + R -> mmc -> File -> Add/Remove Snap-in -> Active Directory Users and Computers -> Add -> OK -> File -> Save As -> Desktop -> name: zarzadzanie_domena_wyrobek.local -> Save`
+
 ![MMC console saved on tlem desktop](images/Pasted%20image%2020260614192145.png)
 
 **tlem successfully manages groups in the Kadry OU but receives an access denied error in other OUs.**
+
+`Log in as tlem on Nowak -> open zarzadzanie_domena_wyrobek.local -> manage a group in Kadry OU (succeeds) -> attempt the same in another OU (Access Denied)`
 
 ![tlem managing groups in Kadry OU](images/Pasted%20image%2020260614192256.png)
 ![Access denied in other OU](images/Pasted%20image%2020260614192318.png)
